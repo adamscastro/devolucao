@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Detalhes do Empréstimo</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Detalhes do Empréstimo</h1>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Empréstimo ID: <span th:text="${emprestimo.id}"></span></h5>
+                <p class="card-text">ID Usuário: <span th:text="${emprestimo.idUsuario}"></span></p>
+                <p class="card-text">ID Livro: <span th:text="${emprestimo.idLivro}"></span></p>
+                <p class="card-text">Data Empréstimo: <span th:text="${emprestimo.dataEmprestimo}"></span></p>
+                <p class="card-text">Data Prevista Devolução: <span th:text="${emprestimo.dataPrevistaDevolucao}"></span></p>
+                <p class="card-text">Data Devolução: <span th:text="${emprestimo.dataDevolucao}"></span></p>
+                <p class="card-text">Status: <span th:text="${emprestimo.status}"></span></p>
+                <form th:action="@{/emprestimos/devolver-detalhe/{id}(id=${emprestimo.id})}" method="post" th:if="${emprestimo.status != 'Devolvido'}">
+                    <button type="submit" class="btn btn-primary">Devolver</button>
+                </form>
+                <a href="/emprestimos" class="btn btn-secondary mt-3">Voltar</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
