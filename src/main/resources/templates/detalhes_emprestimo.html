@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhes do Empréstimo</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .card-title {
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+        .alert-info {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Detalhes do Empréstimo</h1>
+        <div th:if="${mensagens != null}" class="alert alert-info" role="alert">
+            <p th:text="${mensagens}"></p>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Empréstimo ID: <span th:text="${emprestimo.id}">1</span></h5>
+                <p class="card-text"><strong>ID Usuário:</strong> <span th:text="${emprestimo.idUsuario}">1</span></p>
+                <p class="card-text"><strong>ID Livro:</strong> <span th:text="${emprestimo.idLivro}">1</span></p>
+                <p class="card-text"><strong>Data Empréstimo:</strong> <span th:text="${#dates.format(emprestimo.dataEmprestimo, 'dd/MM/yyyy')}">01/01/2024</span></p>
+                <p class="card-text"><strong>Data Prevista Devolução:</strong> <span th:text="${#dates.format(emprestimo.dataPrevistaDevolucao, 'dd/MM/yyyy')}">10/01/2024</span></p>
+                <p class="card-text"><strong>Data Devolução:</strong> <span th:text="${#dates.format(emprestimo.dataDevolucao, 'dd/MM/yyyy')}">-</span></p>
+                <p class="card-text"><strong>Status:</strong> <span th:text="${emprestimo.status}">Pendente</span></p>
+                <a th:href="@{/emprestimos}" class="btn btn-secondary">Voltar</a>
+                <form th:action="@{/emprestimos/processar/{id}(id=${emprestimo.id})}" method="post" th:if="${emprestimo.status == 'Pendente'}" style="display:inline;">
+                    <button type="submit" class="btn btn-primary">Processar</button>
+                </form>
+                <form th:action="@{/emprestimos/pagarMulta/{id}(id=${emprestimo.id})}" method="post" th:if="${emprestimo.status == 'Atrasado'}" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Pagar Multa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,8 +1,10 @@
 package com.example.devolucao.model;
 
 import jakarta.persistence.*;
-
 import java.util.Date;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 @Entity
 @Table(name = "emprestimo")
 public class Emprestimo {
@@ -32,29 +34,62 @@ public class Emprestimo {
     @Column(name = "status", nullable = false)
     private String status;
 
+    @Column(name = "multa_paga", nullable = false)
+    private boolean multaPaga = false;
+
     @Transient
-    private EstadoEmprestimo estado;
+    private EstadoDevolucao estado;
 
     @PostLoad
     @PostPersist
     @PostUpdate
     private void defineEstado() {
-        if ("Devolvido".equals(this.status)) {
-            this.estado = new Devolvido();
-        } else {
-            this.estado = new Emprestado();
+        switch (this.status) {
+            case "Concluido":
+                this.estado = new EstadoConcluido(this);
+                break;
+            case "Atrasado":
+                this.estado = new EstadoAtrasado(this);
+                break;
+            default:
+                this.estado = new EstadoPendente(this);
+                break;
         }
     }
 
-    public void setEstado(EstadoEmprestimo estado) {
+    public void setEstado(EstadoDevolucao estado) {
         this.estado = estado;
-        this.status = estado.getNomeEstado();
+        this.status = estado.getClass().getSimpleName().replace("Estado", "");
+        if (estado instanceof EstadoConcluido) {
+            this.dataDevolucao = new Date();
+        }
     }
 
-    public void proximoEstado() {
-        if (estado != null) {
-            estado.proximoEstado(this);
-        }
+    public String descrever() {
+        return estado.descrever();
+    }
+
+    public void tratar() {
+        estado.tratar();
+    }
+
+    public int getDiasRestantes() {
+        LocalDate dataPrevista = convertToLocalDateViaSqlDate(dataPrevistaDevolucao);
+        return (int) ChronoUnit.DAYS.between(LocalDate.now(), dataPrevista);
+    }
+
+    public int getDiasAtraso() {
+        LocalDate dataPrevista = convertToLocalDateViaSqlDate(dataPrevistaDevolucao);
+        return (int) ChronoUnit.DAYS.between(dataPrevista, LocalDate.now());
+    }
+
+    public boolean isMultaPaga() {
+        return multaPaga;
+    }
+
+    public void pagarMulta() {
+        this.multaPaga = true;
+        this.tratar();
     }
 
     public Long getId() {
@@ -113,9 +148,15 @@ public class Emprestimo {
         this.status = status;
     }
 
-    public EstadoEmprestimo getEstado() {
+    public EstadoDevolucao getEstado() {
         return estado;
     }
 
-    
+    private LocalDate convertToLocalDateViaSqlDate(Date dateToConvert) {
+        return new java.sql.Date(dateToConvert.getTime()).toLocalDate();
+    }
+
+    public String getMensagensEstado() {
+        return estado.descrever();
+    }
 }

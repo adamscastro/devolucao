@@ -2,97 +2,71 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Lista de Empréstimos</title>
-    <!-- Bootstrap CSS -->
+    <title>Controle de Devolução</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        h1 {
+            margin-bottom: 30px;
+        }
+        table {
+            background-color: #ffffff;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        thead {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="mb-4">Lista de Empréstimos</h1>
-
-        <!-- Formulário de Pesquisa -->
-        <form class="form-inline mb-3" th:action="@{/emprestimos}" method="get">
-            <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar por ID de Usuário ou Livro" aria-label="Search" name="query" th:value="${query}">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
-        </form>
-
-        <!-- Nav tabs -->
-        <ul class="nav nav-tabs" id="emprestimosTab" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="em-aberto-tab" data-toggle="tab" href="#em-aberto" role="tab" aria-controls="em-aberto" aria-selected="true">Em Aberto</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="concluidos-tab" data-toggle="tab" href="#concluidos" role="tab" aria-controls="concluidos" aria-selected="false">Concluídos</a>
-            </li>
-        </ul>
-        
-        <!-- Tab panes -->
-        <div class="tab-content" id="emprestimosTabContent">
-            <div class="tab-pane fade show active" id="em-aberto" role="tabpanel" aria-labelledby="em-aberto-tab">
-                <table class="table table-striped mt-3">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>ID Usuário</th>
-                            <th>ID Livro</th>
-                            <th>Data Empréstimo</th>
-                            <th>Data Prevista Devolução</th>
-                            <th>Data Devolução</th>
-                            <th>Status</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="emprestimo : ${emAberto}">
-                            <td th:text="${emprestimo.id}"></td>
-                            <td th:text="${emprestimo.idUsuario}"></td>
-                            <td th:text="${emprestimo.idLivro}"></td>
-                            <td th:text="${emprestimo.dataEmprestimo}"></td>
-                            <td th:text="${emprestimo.dataPrevistaDevolucao}"></td>
-                            <td th:text="${emprestimo.dataDevolucao}"></td>
-                            <td th:text="${emprestimo.status}"></td>
-                            <td>
-                                <a th:href="@{/emprestimos/{id}(id=${emprestimo.id})}" class="btn btn-info">Ver Detalhes</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="tab-pane fade" id="concluidos" role="tabpanel" aria-labelledby="concluidos-tab">
-                <table class="table table-striped mt-3">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th>ID</th>
-                            <th>ID Usuário</th>
-                            <th>ID Livro</th>
-                            <th>Data Empréstimo</th>
-                            <th>Data Prevista Devolução</th>
-                            <th>Data Devolução</th>
-                            <th>Status</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="emprestimo : ${concluidos}">
-                            <td th:text="${emprestimo.id}"></td>
-                            <td th:text="${emprestimo.idUsuario}"></td>
-                            <td th:text="${emprestimo.idLivro}"></td>
-                            <td th:text="${emprestimo.dataEmprestimo}"></td>
-                            <td th:text="${emprestimo.dataPrevistaDevolucao}"></td>
-                            <td th:text="${emprestimo.dataDevolucao}"></td>
-                            <td th:text="${emprestimo.status}"></td>
-                            <td>
-                                <a th:href="@{/emprestimos/{id}(id=${emprestimo.id})}" class="btn btn-info">Ver Detalhes</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="container">
+        <h1>Controle de Devolução</h1>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ID Livro</th>
+                    <th>ID Usuário</th>
+                    <th>Mensagem</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="emprestimo : ${emprestimos}">
+                    <td th:text="${emprestimo.id}">1</td>
+                    <td th:text="${emprestimo.idLivro}">1</td>
+                    <td th:text="${emprestimo.idUsuario}">1</td>
+                    <td th:text="${emprestimo.status != 'Concluido' ? emprestimo.getMensagensEstado() : ''}">Mensagem</td>
+                    <td th:text="${emprestimo.status}">Pendente</td>
+                    <td>
+                        <a th:href="@{/emprestimos/detalhes/{id}(id=${emprestimo.id})}" class="btn btn-info">Detalhes</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
