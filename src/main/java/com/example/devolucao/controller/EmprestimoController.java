@@ -3,6 +3,7 @@ package com.example.devolucao.controller;
 import com.example.devolucao.service.DevolucaoFacade;
 import com.example.devolucao.model.Emprestimo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -47,5 +48,12 @@ public class EmprestimoController {
         model.addAttribute("emprestimo", emprestimo);
         model.addAttribute("mensagens", emprestimo.getMensagensEstado());
         return "detalhes_emprestimo";
+    }
+
+    @GetMapping("/json")
+    @ResponseBody
+    public ResponseEntity<List<Emprestimo>> getAllEmprestimosJson() {
+        List<Emprestimo> emprestimos = devolucaoFacade.getAllEmprestimos();
+        return ResponseEntity.ok(emprestimos);
     }
 }

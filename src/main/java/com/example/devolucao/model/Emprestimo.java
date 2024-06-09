@@ -2,6 +2,9 @@ package com.example.devolucao.model;
 
 import jakarta.persistence.*;
 import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -13,17 +16,17 @@ public class Emprestimo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "id_usuario", nullable = false)
+    @Column(name = "id_usuario", nullable = true)
     private Long idUsuario;
 
-    @Column(name = "id_livro", nullable = false)
+    @Column(name = "id_livro", nullable = true)
     private Long idLivro;
 
-    @Column(name = "data_emprestimo", nullable = false)
+    @Column(name = "data_emprestimo", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date dataEmprestimo;
 
-    @Column(name = "data_prevista_devolucao", nullable = false)
+    @Column(name = "data_prevista_devolucao", nullable = true)
     @Temporal(TemporalType.DATE)
     private Date dataPrevistaDevolucao;
 
@@ -31,12 +34,13 @@ public class Emprestimo {
     @Temporal(TemporalType.DATE)
     private Date dataDevolucao;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status", nullable = true)
     private String status;
 
     @Column(name = "multa_paga", nullable = false)
     private boolean multaPaga = false;
 
+    @JsonIgnore
     @Transient
     private EstadoDevolucao estado;
 
