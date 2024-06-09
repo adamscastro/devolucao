@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,24 +56,34 @@ public class DevolucaoFacade {
         EmprestimoExternoDTO[] emprestimosDTO = restTemplate.getForObject(EMPRESTIMO_API_URL, EmprestimoExternoDTO[].class);
         List<Emprestimo> emprestimos = Arrays.stream(emprestimosDTO)
                 .map(this::convertToEmprestimo)
+                .filter(this::isNewEmprestimo) // Verifica se o empréstimo já existe
                 .collect(Collectors.toList());
-        emprestimos.forEach(this::saveEmprestimo); // Salva cada empréstimo no banco de dados
+        emprestimos.forEach(this::saveEmprestimo); // Salva cada novo empréstimo no banco de dados
         return emprestimos;
     }
 
     private Emprestimo convertToEmprestimo(EmprestimoExternoDTO dto) {
         Emprestimo emprestimo = new Emprestimo();
         emprestimo.setId(null);
-        emprestimo.setIdUsuario(dto.getId_usuario()); 
-        emprestimo.setIdLivro(dto.getId_livro()); 
+        emprestimo.setIdUsuario(dto.getId_usuario());
+        emprestimo.setIdLivro(dto.getId_livro());
         emprestimo.setDataEmprestimo(convertToDate(dto.getData_emprestimo()));
         emprestimo.setDataPrevistaDevolucao(convertToDate(dto.getData_devolucao()));
-        emprestimo.setDataDevolucao(null); 
+        emprestimo.setDataDevolucao(null);
         emprestimo.setStatus("Pendente");
         return emprestimo;
     }
 
     private Date convertToDate(LocalDate localDate) {
         return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
+    private boolean isNewEmprestimo(Emprestimo emprestimo) {
+        Optional<Emprestimo> existingEmprestimo = emprestimoRepository.findByIdLivroAndIdUsuarioAndDataEmprestimo(
+                emprestimo.getIdLivro(),
+                emprestimo.getIdUsuario(),
+                emprestimo.getDataEmprestimo()
+        );
+        return existingEmprestimo.isEmpty();
     }
 }
