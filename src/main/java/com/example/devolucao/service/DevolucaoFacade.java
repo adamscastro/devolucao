@@ -4,6 +4,7 @@ import com.example.devolucao.dto.EmprestimoExternoDTO;
 import com.example.devolucao.model.Emprestimo;
 import com.example.devolucao.repository.EmprestimoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -51,15 +52,14 @@ public class DevolucaoFacade {
         emprestimoRepository.save(emprestimo);
     }
 
-    // Método para consumir dados do serviço Django e salvar no banco de dados local
-    public List<Emprestimo> fetchAndSaveExternalEmprestimos() {
+    @Scheduled(fixedRate = 60000)
+    public void fetchAndSaveExternalEmprestimos() {
         EmprestimoExternoDTO[] emprestimosDTO = restTemplate.getForObject(EMPRESTIMO_API_URL, EmprestimoExternoDTO[].class);
         List<Emprestimo> emprestimos = Arrays.stream(emprestimosDTO)
                 .map(this::convertToEmprestimo)
-                .filter(this::isNewEmprestimo) // Verifica se o empréstimo já existe
+                .filter(this::isNewEmprestimo) 
                 .collect(Collectors.toList());
-        emprestimos.forEach(this::saveEmprestimo); // Salva cada novo empréstimo no banco de dados
-        return emprestimos;
+        emprestimos.forEach(this::saveEmprestimo);
     }
 
     private Emprestimo convertToEmprestimo(EmprestimoExternoDTO dto) {
