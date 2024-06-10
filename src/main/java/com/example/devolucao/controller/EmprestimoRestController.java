@@ -20,9 +20,4 @@ public class EmprestimoRestController {
     public List<Emprestimo> getAllEmprestimos() {
         return devolucaoFacade.getAllEmprestimos();
     }
-
-    @GetMapping("/external")
-    public List<Emprestimo> fetchAndSaveExternalEmprestimos() {
-        return devolucaoFacade.fetchAndSaveExternalEmprestimos();
-    }
 }
