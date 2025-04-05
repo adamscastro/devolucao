@@ -12,8 +12,15 @@ Este microserviço é responsável pela funcionalidade de devolução de livros 
 
 ## Padrões de Projeto Aplicados
 
-- Strategy
-- Observer
+- **State**.
+- **Strategy**.
+- **Observer**.
+- **Facade**.
+
+## 📊 Diagrama de Classes
+
+![Diagrama](./diagrama/diagrama-devolucao.png)
+
 
 ## Tecnologias
 
