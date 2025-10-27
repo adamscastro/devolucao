@@ -1,4 +1,4 @@
-# 📚 Microserviço de Devolução de Livros
+# Microserviço de Devolução de Livros
 
 Projeto desenvolvido como parte de uma atividade acadêmica, com foco na aplicação de padrões de projeto (GoF) em arquitetura de microsserviços.
 
@@ -17,7 +17,7 @@ Este microserviço é responsável pela funcionalidade de devolução de livros 
 - **Observer**.
 - **Facade**.
 
-## 📊 Diagrama de Classes
+## Diagrama de Classes
 
 ![Diagrama](./diagrama/diagrama-devolucao.png)
 
@@ -27,5 +27,6 @@ Este microserviço é responsável pela funcionalidade de devolução de livros 
 - Java
 - Spring Boot
 - Maven
+
 
 
